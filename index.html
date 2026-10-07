@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FamilyChat</title>
+<style>
+:root{--bg:#eef2f7;--card:#fff;--ink:#172033;--muted:#7b8496;--blue:#1677ff;--blue2:#0d63dd;--line:#e5e9f0;--mine:#1677ff;--other:#fff}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,#eaf2ff,#f7f9fc);color:var(--ink);height:100vh;overflow:hidden}
+button,input{font:inherit}.hidden{display:none!important}
+#login{height:100vh;display:grid;place-items:center;padding:20px}.login-card{width:min(420px,100%);background:#fff;padding:34px;border-radius:26px;box-shadow:0 20px 70px #24466a24}.logo{width:64px;height:64px;border-radius:20px;background:linear-gradient(145deg,#2687ff,#0b5ed7);display:grid;place-items:center;color:white;font-size:30px;margin-bottom:20px;box-shadow:0 12px 25px #1677ff45}.login-card h1{margin:0 0 6px;font-size:28px}.login-card p{color:var(--muted);margin:0 0 25px}.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:700;margin:0 0 7px}.field input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:13px;outline:none}.field input:focus{border-color:#5ba1ff;box-shadow:0 0 0 3px #1677ff18}.primary{border:0;background:var(--blue);color:#fff;width:100%;padding:14px;border-radius:13px;font-weight:800;cursor:pointer;margin-top:8px}.primary:hover{background:var(--blue2)}#loginError{color:#d93025;font-size:13px;min-height:20px;margin-top:10px}
+#app{height:100vh;display:flex}.sidebar{width:320px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column}.side-head{padding:22px 20px 14px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900;font-size:22px}.me{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#e8f1ff;font-size:20px}.search{margin:0 16px 14px;background:#f3f5f8;border-radius:12px;padding:11px 13px;color:var(--muted)}.chat-item{margin:3px 9px;padding:13px;border-radius:15px;display:flex;gap:12px;align-items:center;cursor:pointer}.chat-item:hover{background:#f3f7fc}.chat-item.active{background:#edf5ff}.avatar{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#dceaff,#bdd7ff);font-size:22px;flex:none}.chat-meta{min-width:0;flex:1}.chat-meta b{display:block}.preview{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.side-foot{margin-top:auto;padding:15px;border-top:1px solid var(--line)}.logout{border:0;background:#f3f5f8;padding:10px 12px;border-radius:10px;width:100%;cursor:pointer}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;background:linear-gradient(#f7f9fc,#eef3f8)}.topbar{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:12px}.topbar .avatar{width:44px;height:44px}.title{font-weight:800}.status{font-size:12px;color:#29a45d;margin-top:2px}.important-note{font-size:11px;color:#d64545;margin-top:3px;max-width:650px}.messages{flex:1;overflow-y:auto;padding:24px max(20px,calc((100% - 850px)/2));scroll-behavior:smooth}.day{text-align:center;color:#8a93a3;font-size:12px;margin:8px 0 20px}.row{display:flex;margin:8px 0}.row.mine{justify-content:flex-end}.bubble{max-width:min(620px,78%);background:var(--other);padding:10px 13px 7px;border-radius:18px 18px 18px 5px;box-shadow:0 2px 7px #1c355514}.mine .bubble{background:var(--mine);color:#fff;border-radius:18px 18px 5px 18px}.sender{font-size:12px;font-weight:800;color:#4474b7;margin-bottom:4px}.mine .sender{color:#dbeaff}.text{line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}.time{text-align:right;font-size:10px;opacity:.7;margin-top:4px}.attachment{margin-top:8px;border:1px solid #dce3ec;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;background:#f8fafc;color:#26354c}.mine .attachment{background:#ffffff18;color:white;border-color:#ffffff35}.attachment .fileicon{font-size:24px}.attachment small{display:block;opacity:.7}.photo{display:block;max-width:100%;max-height:300px;border-radius:12px;margin-top:8px}.composer-wrap{background:#fff;border-top:1px solid var(--line);padding:12px max(18px,calc((100% - 900px)/2)) 16px}.recipients{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.recipients-label{font-size:12px;font-weight:800;color:var(--muted);margin-right:2px}.recipient{display:flex;align-items:center;gap:5px;background:#f3f6fa;border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:13px;cursor:pointer;user-select:none}.recipient input{accent-color:var(--blue);margin:0}.recipient.disabled{opacity:.45;cursor:not-allowed}.file-preview{display:flex;align-items:center;gap:9px;background:#f3f6fa;border-radius:12px;padding:8px 12px;margin-bottom:8px;font-size:13px}.remove-file{margin-left:auto;border:0;background:transparent;cursor:pointer;font-size:18px}.composer{display:flex;align-items:flex-end;gap:9px}.attach-btn,.send{border:0;cursor:pointer;flex:none}.attach-btn{width:44px;height:44px;border-radius:13px;background:#f0f3f7;font-size:21px}.message-input{flex:1;min-height:44px;max-height:120px;resize:none;border:1px solid var(--line);border-radius:15px;padding:11px 14px;outline:none;font:inherit}.send{height:44px;padding:0 18px;border-radius:13px;background:var(--blue);color:#fff;font-weight:800}.empty-note{text-align:center;color:#8a93a3;font-size:13px;margin:25px}.bubble{position:relative}.msg-menu-btn{position:absolute;top:5px;right:7px;border:0;background:transparent;color:inherit;opacity:0;cursor:pointer;font-size:18px;line-height:1;padding:3px 6px;border-radius:8px}.row.mine .bubble:hover .msg-menu-btn{opacity:.75}.msg-menu-btn:hover{background:#ffffff24;opacity:1!important}.msg-menu{position:absolute;right:8px;top:30px;background:#fff;color:#172033;border:1px solid var(--line);border-radius:11px;padding:5px;box-shadow:0 8px 25px #1720332b;z-index:5;min-width:125px}.msg-menu button{display:block;width:100%;border:0;background:transparent;text-align:left;padding:8px 10px;border-radius:8px;cursor:pointer}.msg-menu button:hover{background:#f2f5f9}.edited{font-size:9px;opacity:.7;margin-right:4px}
+@media(max-width:720px){.sidebar{display:none}.topbar{padding:0 14px}.messages{padding:18px 12px}.bubble{max-width:88%}.composer-wrap{padding:10px}.send{padding:0 13px}.topbar:before{content:'‹';font-size:28px;color:#8b94a3}}
+</style>
+</head>
+<body>
+<section id="login">
+  <div class="login-card">
+    <div class="logo">💬</div><h1>FamilyChat</h1><p>La messagerie privée de la famille.</p>
+    <div class="field"><label>Adresse e-mail</label><input id="email" type="email" placeholder="votre@email.com"></div>
+    <div class="field"><label>Mot de passe</label><input id="password" type="password" placeholder="••••"></div>
+    <button class="primary" id="loginBtn">Se connecter</button><div id="loginError"></div>
+  </div>
+</section>
+<section id="app" class="hidden">
+  <aside class="sidebar">
+    <div class="side-head"><div class="brand">FamilyChat</div><div class="me" id="meAvatar">🙂</div></div>
+    <div class="search">🔎 Rechercher</div>
+    <div class="chat-item active" data-chat="famille"><div class="avatar">🏠</div><div class="chat-meta"><b>Famille</b><div class="preview" id="preview-famille">Bienvenue sur FamilyChat !</div></div></div>
+    <div class="chat-item" data-chat="societe"><div class="avatar">💼</div><div class="chat-meta"><b>Société</b><div class="preview" id="preview-societe">Aucun message</div></div></div>
+    <div class="chat-item" data-chat="informations"><div class="avatar">ℹ️</div><div class="chat-meta"><b>Informations</b><div class="preview" id="preview-informations">Aucun message</div></div></div>
+    <div class="chat-item" data-chat="important"><div class="avatar">🚨</div><div class="chat-meta"><b>IMPORTANT</b><div class="preview" id="preview-important">Aucun message</div></div></div>
+    <div class="side-foot"><button class="logout" id="logoutBtn">Se déconnecter</button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="avatar" id="chatAvatar">🏠</div><div><div class="title" id="chatTitle">Famille</div><div class="status" id="chatStatus">● Papa • Maman • Vincent</div><div class="important-note hidden" id="importantNote">Merci d'envoyer seulement des messages importants pour ne pas confondre les utilisateurs.</div></div></header>
+    <div class="messages" id="messages"><div class="day">AUJOURD'HUI</div></div>
+    <div class="composer-wrap">
+      <div class="recipients" id="recipients">
+        <span class="recipients-label">À :</span>
+        <label class="recipient"><input type="checkbox" id="toAll"> 🌍 Tout le monde</label>
+        <label class="recipient" id="labelPapa"><input id="toPapa" type="checkbox" class="toPerson" data-role="papa"> 👨 Papa</label>
+        <label class="recipient" id="labelMaman"><input id="toMaman" type="checkbox" class="toPerson" data-role="maman"> 👩 Maman</label>
+        <label class="recipient" id="labelVincent"><input id="toVincent" type="checkbox" class="toPerson" data-role="vincent"> 😎 Vincent</label>
+      </div>
+      <div id="filePreview" class="file-preview hidden"><span>📎</span><span id="fileName"></span><button class="remove-file" id="removeFile">×</button></div>
+      <div class="composer"><button class="attach-btn" id="attachBtn" title="Ajouter une pièce jointe">📎</button><input id="fileInput" type="file" hidden><textarea id="messageInput" class="message-input" rows="1" placeholder="Écrire un message..."></textarea><button class="send" id="sendBtn">Envoyer</button></div>
+    </div>
+  </main>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://qlmvisseflbkanditwon.supabase.co";
+const SUPABASE_KEY="sb_publishable_NWFSOxMyNlbhKdK5XgVZng_GFrIFFDe";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const chats={famille:{name:'Famille',emoji:'🏠'},societe:{name:'Société',emoji:'💼'},informations:{name:'Informations',emoji:'ℹ️'},important:{name:'IMPORTANT',emoji:'🚨'}};
+const people={papa:{name:'Papa',emoji:'👨'},maman:{name:'Maman',emoji:'👩'},vincent:{name:'Vincent',emoji:'😎'}};
+let currentUser=null,currentProfile=null,currentChat='famille',selectedFile=null,channelMap={},pollTimer=null;
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function formatBytes(n){if(!n)return '0 o';if(n<1024)return n+' o';if(n<1048576)return (n/1024).toFixed(1)+' Ko';return (n/1048576).toFixed(1)+' Mo'}
+function recipientNames(list){if(list?.includes('all'))return 'Tout le monde';return (list||[]).map(r=>people[r]?.name||r).join(', ')}
+
+async function login(){
+ $('loginError').textContent='Connexion…';
+ const email=$('email').value.trim(),password=$('password').value;
+ const {data,error}=await db.auth.signInWithPassword({email,password});
+ if(error){$('loginError').textContent='E-mail ou mot de passe incorrect.';return}
+ currentUser=data.user; await loadProfileAndOpen();
+}
+async function loadProfileAndOpen(){
+ const {data,error}=await db.from('profiles').select('id,display_name,role').eq('id',currentUser.id).single();
+ if(error||!data){await db.auth.signOut();$('loginError').textContent='Ce compte n’a pas de profil FamilyChat.';return}
+ currentProfile=data;
+ const {data:chs}=await db.from('channels').select('id,slug,name');
+ channelMap=Object.fromEntries((chs||[]).map(c=>[c.slug,c.id]));
+ $('login').classList.add('hidden');$('app').classList.remove('hidden');$('meAvatar').textContent=people[data.role]?.emoji||'🙂';
+ setupRecipients();await renderMessages();startPolling();
+}
+function setupRecipients(){
+ document.querySelectorAll('.toPerson').forEach(cb=>{
+   const role=cb.dataset.role; const own=role===currentProfile.role;
+   cb.value=role;cb.checked=false;cb.disabled=own;cb.closest('.recipient').classList.toggle('disabled',own);
+ });
+ $('toAll').checked=true;syncAllRecipients();
+}
+function syncAllRecipients(){if($('toAll').checked)document.querySelectorAll('.toPerson:not(:disabled)').forEach(cb=>cb.checked=true)}
+
+async function fetchMessages(chat=currentChat){
+ const cid=channelMap[chat]; if(!cid)return [];
+ const {data,error}=await db.from('messages').select('id,channel_id,sender_id,content,recipients,edited,created_at,updated_at,profiles!messages_sender_id_fkey(display_name,role),attachments(id,file_name,file_path,file_type,file_size)').eq('channel_id',cid).order('created_at',{ascending:true});
+ if(error){console.error(error);return []} return data||[];
+}
+async function renderMessages(){
+ const box=$('messages');box.innerHTML='<div class="day">AUJOURD\'HUI</div>';
+ const msgs=await fetchMessages();
+ if(!msgs.length)box.insertAdjacentHTML('beforeend','<div class="empty-note">Aucun message pour le moment. Écris le premier 👋</div>');
+ for(const m of msgs) await addMessageElement(m);await updatePreviews();box.scrollTop=box.scrollHeight;
+}
+async function addMessageElement(m){
+ const mine=m.sender_id===currentUser.id, prof=m.profiles||{}, row=document.createElement('div');row.className='row'+(mine?' mine':'');
+ let files=''; for(const f of (m.attachments||[])){
+   const signed=await db.storage.from('chat-files').createSignedUrl(f.file_path,3600);
+   const url=signed.data?.signedUrl||'#';
+   if((f.file_type||'').startsWith('image/'))files+=`<a href="${esc(url)}" target="_blank"><img class="photo" src="${esc(url)}" alt="${esc(f.file_name)}"></a>`;
+   else files+=`<a href="${esc(url)}" target="_blank" style="text-decoration:none"><div class="attachment"><span class="fileicon">📄</span><div><b>${esc(f.file_name)}</b><small>${formatBytes(f.file_size)}</small></div></div></a>`;
+ }
+ const menu=mine?`<button class="msg-menu-btn" title="Options" onclick="toggleMessageMenu(event,'${m.id}')">⋮</button><div class="msg-menu hidden" id="menu-${m.id}"><button onclick="editMessage('${m.id}')">✏️ Modifier</button><button onclick="copyMessage('${m.id}')">📋 Copier</button><button onclick="deleteMessage('${m.id}')">🗑️ Supprimer</button></div>`:'';
+ const time=new Date(m.created_at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+ row.innerHTML=`<div class="bubble">${menu}<div class="sender">${esc(prof.display_name||'Utilisateur')} → ${esc(recipientNames(m.recipients))}</div>${m.content?`<div class="text">${esc(m.content)}</div>`:''}${files}<div class="time">${m.edited?'<span class="edited">modifié</span>':''}${time} ${mine?'✓✓':''}</div></div>`;
+ $('messages').appendChild(row);
+}
+async function send(){
+ const text=$('messageInput').value.trim();if(!text&&!selectedFile)return;
+ let recipients=$('toAll').checked?['all']:[...document.querySelectorAll('.toPerson:checked:not(:disabled)')].map(x=>x.dataset.role);
+ if(!recipients.length){alert('Choisis au moins un destinataire.');return}
+ $('sendBtn').disabled=true;
+ const {data:m,error}=await db.from('messages').insert({channel_id:channelMap[currentChat],sender_id:currentUser.id,content:text||null,recipients}).select('id').single();
+ if(error){alert('Impossible d’envoyer le message : '+error.message);$('sendBtn').disabled=false;return}
+ if(selectedFile){
+   const safe=selectedFile.name.replace(/[^a-zA-Z0-9._-]/g,'_'); const path=`${currentUser.id}/${m.id}/${Date.now()}_${safe}`;
+   const up=await db.storage.from('chat-files').upload(path,selectedFile,{contentType:selectedFile.type||'application/octet-stream'});
+   if(up.error)alert('Message envoyé, mais la pièce jointe a échoué : '+up.error.message);
+   else await db.from('attachments').insert({message_id:m.id,file_name:selectedFile.name,file_path:path,file_type:selectedFile.type,file_size:selectedFile.size});
+ }
+ $('messageInput').value='';clearFile();$('sendBtn').disabled=false;await renderMessages();
+}
+async function editMessage(id){
+ const {data:m}=await db.from('messages').select('content,sender_id').eq('id',id).single();if(!m||m.sender_id!==currentUser.id)return;
+ const value=prompt('Modifier le message :',m.content||'');if(value===null)return;
+ const text=value.trim();if(!text){alert('Le texte ne peut pas être vide.');return}
+ const {error}=await db.from('messages').update({content:text,edited:true,updated_at:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);await renderMessages();
+}
+async function deleteMessage(id){
+ if(!confirm('Supprimer ce message ?'))return;
+ const {data:atts}=await db.from('attachments').select('file_path').eq('message_id',id);
+ if(atts?.length)await db.storage.from('chat-files').remove(atts.map(a=>a.file_path));
+ const {error}=await db.from('messages').delete().eq('id',id);if(error)alert(error.message);await renderMessages();
+}
+async function copyMessage(id){const {data}=await db.from('messages').select('content').eq('id',id).single();if(data)await navigator.clipboard.writeText(data.content||'');document.querySelectorAll('.msg-menu').forEach(x=>x.classList.add('hidden'))}
+function toggleMessageMenu(e,id){e.stopPropagation();document.querySelectorAll('.msg-menu').forEach(x=>{if(x.id!=='menu-'+id)x.classList.add('hidden')});$('menu-'+id)?.classList.toggle('hidden')}
+async function updatePreviews(){
+ for(const slug of Object.keys(chats)){
+   const cid=channelMap[slug],el=$('preview-'+slug);if(!cid||!el)continue;
+   const {data}=await db.from('messages').select('content,created_at').eq('channel_id',cid).order('created_at',{ascending:false}).limit(1);
+   el.textContent=data?.[0]?.content||'Aucun message';
+ }
+}
+function switchChat(id){currentChat=id;const c=chats[id];document.querySelectorAll('.chat-item').forEach(x=>x.classList.toggle('active',x.dataset.chat===id));$('chatAvatar').textContent=c.emoji;$('chatTitle').textContent=c.name;$('chatStatus').textContent=id==='important'?'● Messages prioritaires':'● Papa • Maman • Vincent';$('importantNote').classList.toggle('hidden',id!=='important');renderMessages()}
+function clearFile(){selectedFile=null;$('fileInput').value='';$('filePreview').classList.add('hidden')}
+function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(()=>{if(!document.hidden)renderMessages()},4000)}
+
+document.querySelectorAll('.toPerson').forEach(cb=>cb.dataset.role=cb.id==='toPapa'?'papa':cb.id==='toMaman'?'maman':'vincent');
+$('toAll').addEventListener('change',()=>document.querySelectorAll('.toPerson:not(:disabled)').forEach(cb=>cb.checked=$('toAll').checked));
+document.querySelectorAll('.toPerson').forEach(cb=>cb.addEventListener('change',()=>{const active=[...document.querySelectorAll('.toPerson:not(:disabled)')];$('toAll').checked=active.length>0&&active.every(x=>x.checked)}));
+document.querySelectorAll('.chat-item').forEach(x=>x.addEventListener('click',()=>switchChat(x.dataset.chat)));
+document.addEventListener('click',()=>document.querySelectorAll('.msg-menu').forEach(x=>x.classList.add('hidden')));
+$('loginBtn').onclick=login;$('password').addEventListener('keydown',e=>{if(e.key==='Enter')login()});$('logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload()};$('attachBtn').onclick=()=>$('fileInput').click();$('fileInput').onchange=e=>{selectedFile=e.target.files[0]||null;if(selectedFile){$('fileName').textContent=selectedFile.name;$('filePreview').classList.remove('hidden')}};$('removeFile').onclick=clearFile;$('sendBtn').onclick=send;$('messageInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+(async()=>{const {data:{session}}=await db.auth.getSession();if(session){currentUser=session.user;await loadProfileAndOpen()}})();
+</script>
+</body>
+</html>
